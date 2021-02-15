@@ -36,7 +36,7 @@ class _ReadingViewState extends State<ReadingView> {
   List<QuestionModel> questions = [
    QuestionModel(
       question: "What is the highest paid programming language in 2021?",
-      optionA: "C",
+      optionA: "C++",
       optionB: "C++",
       optionC: "Python",
       optionD: "Flutter",
@@ -73,9 +73,16 @@ class _ReadingViewState extends State<ReadingView> {
     return ListView(
       children: [
         Card(
+            elevation: 0,
             color: Colors.grey,
             child: ListTile(
-            title: Text(question.question),
+            title: Text(
+              question.question,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold
+              ),
+              ),
             onTap: () {
               print("tap question");
             },
@@ -83,7 +90,13 @@ class _ReadingViewState extends State<ReadingView> {
         ),
         Card(
             child: ListTile(
-            title: Text(question.optionA),
+            title: Text(
+              question.optionA,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal
+              ),
+              ),
             onTap: () {
               setState(() {
                 question.selected = 0;
@@ -154,6 +167,7 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
+
   Widget _QuestionBar(isHidden) {
     return Container(
             color: Colors.cyan,
@@ -196,7 +210,13 @@ class _ReadingViewState extends State<ReadingView> {
           width: size.width,
           height: size.height,
           child: Center(
-            child: Text("Reading Content"),
+            child: Text("Reading Content",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.normal,
+              color: Colors.blue
+            ),
+            ),
           ),
       ),
     );
