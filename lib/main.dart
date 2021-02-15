@@ -43,25 +43,72 @@ class _ReadingViewState extends State<ReadingView> {
       ),
       body: Column(
         children: [
-          _QuestionView(isHidden),
-          _OptionView(size, isHidden),
+          _QuestionBar(isHidden),
+         _QuestionPageView(size, isHidden),
           _ReadingContentView(size)
         ],
       )
     );
   }
 
-  Widget _ReadingContentView(size){
-    return Expanded(
-          child: Container(
-        color: Colors.white,
-        width: size.width,
-        height: size.height,
+  Widget _QuestionView(){
+    return ListView(
+      children: [
+        Card(
+          color: Colors.white,
+          child: ListTile(
+            title: Text("Question"),
+          )
+          ),
+        Card(
+          color: Colors.amber[600],
+          child: ListTile(
+            title: Text("Option A"),
+          )
+          ),
+        Card(
+          color: Colors.amber[600],
+          child: ListTile(
+            title: Text("Option B"),
+          )
+          ),
+        Card(
+          color: Colors.amber[600],
+          child: ListTile(
+            title: Text("Option C"),
+          )
+          ),
+        Card(
+          color: Colors.amber[600],
+          child: ListTile(
+            title: Text("Option D"),
+          )
+          ),
+      ],
+    );
+  }
+
+  Widget _QuestionPageView(size, isHidden){
+    return  Container(
+      width: size.width,
+      height: isHidden ? 0 : size.height / 3.5,
+      child: PageView(
+        children: [
+          Container(
+            color: Colors.grey,
+            child: _QuestionView(),
+          )
+          ,
+          Container(
+            color: Colors.grey,
+            child: _QuestionView(),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _OptionView(size, isHidden) {
+  Widget _OptionViewA(size, isHidden) {
     return AnimatedOpacity(
       opacity: 1,
       duration: const Duration(microseconds: 200),
@@ -69,13 +116,13 @@ class _ReadingViewState extends State<ReadingView> {
         duration: const Duration(microseconds: 200),
         width: size.width,
         alignment: Alignment.topCenter,
-        height: isHidden ? 0 : size.height / 3,
+        height: isHidden ? 0 : size.height / 3.5,
         child: CategoriesScroller(),
       ),
       );
   }
 
-  Widget _QuestionView(isHidden) {
+  Widget _QuestionBar(isHidden) {
     return Container(
             color: Colors.cyan,
             child: Row(
@@ -110,6 +157,19 @@ class _ReadingViewState extends State<ReadingView> {
           );
   }
 
+  Widget _ReadingContentView(size){
+    return Expanded(
+        child: Container(
+          color: Colors.white,
+          width: size.width,
+          height: size.height,
+          child: Center(
+            child: Text("Reading Content"),
+          ),
+      ),
+    );
+  }
+
   void collapse() {
     setState(() {
       isHidden = !isHidden;
@@ -117,9 +177,10 @@ class _ReadingViewState extends State<ReadingView> {
   }
 }
 
+
+
 class CategoriesScroller extends StatelessWidget {
   const CategoriesScroller();
-
   @override 
   Widget build(BuildContext context){
     final double categoryHeight = MediaQuery.of(context).size.height * 0.30 - 50; 
