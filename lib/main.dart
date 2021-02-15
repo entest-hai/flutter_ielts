@@ -32,7 +32,25 @@ class ReadingView extends StatefulWidget {
 
 class _ReadingViewState extends State<ReadingView> {
 
-  bool isHidden = false; 
+  bool isHidden = false;
+  List<QuestionModel> questions = [
+   QuestionModel(
+      question: "What is the highest paid programming language in 2021?",
+      optionA: "C",
+      optionB: "C++",
+      optionC: "Python",
+      optionD: "Flutter",
+      selected: -1
+    ),
+    QuestionModel(
+      question: "Where is the best place to work?",
+      optionA: "Singapore",
+      optionB: "United State",
+      optionC: "Israel",
+      optionD: "Germany",
+      selected: -1
+    )
+  ];
 
   @override 
   Widget build(BuildContext context){
@@ -51,39 +69,67 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
-  Widget _QuestionView(){
+  Widget _QuestionView(QuestionModel question) {
     return ListView(
       children: [
         Card(
-          color: Colors.white,
-          child: ListTile(
-            title: Text("Question"),
-          )
+            color: Colors.grey,
+            child: ListTile(
+            title: Text(question.question),
+            onTap: () {
+              print("tap question");
+            },
           ),
+        ),
         Card(
-          color: Colors.amber[600],
-          child: ListTile(
-            title: Text("Option A"),
-          )
+            child: ListTile(
+            title: Text(question.optionA),
+            onTap: () {
+              setState(() {
+                question.selected = 0;
+              });
+              print("tap option answer $question.selected ");
+            },
           ),
+          color:  question.selected  == 0 ? Colors.yellow : Colors.white,
+        ),
+       Card(
+            child: ListTile(
+            title: Text(question.optionB),
+            onTap: () {
+              setState(() {
+                 question.selected  = 1;
+              });
+              print("tap option answer $question.selected ");
+            },
+          ),
+          color:  question.selected  == 1 ? Colors.yellow : Colors.white,
+        ),
         Card(
-          color: Colors.amber[600],
-          child: ListTile(
-            title: Text("Option B"),
-          )
+            child: ListTile(
+            title: Text(question.optionC),
+            onTap: () {
+              setState(() {
+                 question.selected  = 2;
+              });
+              print("tap option answer $question.selected ");
+            },
           ),
+          color:  question.selected  == 2 ? Colors.yellow : Colors.white,
+        ),
         Card(
-          color: Colors.amber[600],
-          child: ListTile(
-            title: Text("Option C"),
-          )
+            child: ListTile(
+            title: Text(question.optionD),
+            onTap: () {
+              setState(() {
+                 question.selected  = 3;
+              });
+              print("tap option answer $question.selected ");
+            },
           ),
-        Card(
-          color: Colors.amber[600],
-          child: ListTile(
-            title: Text("Option D"),
-          )
-          ),
+          color:  question.selected  == 3 ? Colors.yellow : Colors.white,
+        ),
+        
       ],
     );
   }
@@ -96,12 +142,12 @@ class _ReadingViewState extends State<ReadingView> {
         children: [
           Container(
             color: Colors.grey,
-            child: _QuestionView(),
+            child: _QuestionView(questions[0]),
           )
           ,
           Container(
             color: Colors.grey,
-            child: _QuestionView(),
+            child: _QuestionView(questions[1]),
           ),
         ],
       ),
@@ -276,4 +322,20 @@ class CategoriesScroller extends StatelessWidget {
       ),
     );
   }
+}
+
+class QuestionModel {
+  final String question; 
+  final String optionA;
+  final String optionB;
+  final String optionC;
+  final String optionD;
+  int selected;
+  QuestionModel({
+    this.selected,
+    this.question,
+    this.optionA,
+    this.optionB,
+    this.optionC,
+    this.optionD});
 }
