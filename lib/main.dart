@@ -49,6 +49,22 @@ class _ReadingViewState extends State<ReadingView> {
       optionC: "Israel",
       optionD: "Germany",
       selected: -1
+    ),
+    QuestionModel(
+      question: "Why AWS is so popular today?",
+      optionA: "Mature",
+      optionB: "Friendly",
+      optionC: "Professional",
+      optionD: "Cheap",
+      selected: -1
+    ),
+    QuestionModel(
+      question: "Where is saftest place on earth?",
+      optionA: "Japan",
+      optionB: "United State",
+      optionC: "Vietnam",
+      optionD: "North Korea",
+      selected: -1
     )
   ];
 
@@ -147,23 +163,33 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
+  // PageView(
+  //       children: [
+  //         Container(
+  //           color: Colors.grey,
+  //           child: _QuestionView(questions[0]),
+  //         )
+  //         ,
+  //         Container(
+  //           color: Colors.grey,
+  //           child: _QuestionView(questions[1]),
+  //         ),
+  //       ],
+  //     ),
+
   Widget _QuestionPageView(size, isHidden){
     return  Container(
       width: size.width,
       height: isHidden ? 0 : size.height / 3.5,
-      child: PageView(
-        children: [
-          Container(
+      child: PageView.builder(
+        itemCount: questions.length,
+        itemBuilder: (context, index) {
+          return Container(
             color: Colors.grey,
-            child: _QuestionView(questions[0]),
-          )
-          ,
-          Container(
-            color: Colors.grey,
-            child: _QuestionView(questions[1]),
-          ),
-        ],
-      ),
+            child: _QuestionView(questions[index]),
+          );
+        },
+      )
     );
   }
 
