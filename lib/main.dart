@@ -317,9 +317,10 @@ class _ReadingViewState extends State<ReadingView> {
   }
 
   // Create QuestionView with Question and Option 
-  Widget _QuestionView(QuestionModel question) {
+  Widget _QuestionView(QuestionModel question, bool isHidden) {
     return ListView(
       children: [
+        _QuestionBar(isHidden),
         Card(
             elevation: 0,
             color: Colors.grey,
@@ -400,6 +401,7 @@ class _ReadingViewState extends State<ReadingView> {
     return 
       CarouselSlider(
         options: CarouselOptions(
+          height: isHidden ? 50 : size.height / 3.0,
           viewportFraction: 1.0,
           enlargeCenterPage: true
         ),
@@ -408,7 +410,7 @@ class _ReadingViewState extends State<ReadingView> {
           builder: (BuildContext context) {
             return Container(
               color: Colors.grey,
-              child:  _QuestionView(question),
+              child:  _QuestionView(question, isHidden),
             );
           },
         );
@@ -416,27 +418,10 @@ class _ReadingViewState extends State<ReadingView> {
       );
   }
 
-  // Create QuestionPageView with Horizontal ScollView Per Page 
-  Widget _QuestionPageView(size, isHidden){
-    return  Container(
-      width: size.width,
-      height: isHidden ? 0 : size.height / 2.5,
-      child: PageView.builder(
-        itemCount: questions.length,
-        dragStartBehavior: DragStartBehavior.start,
-        itemBuilder: (context, index) {
-          return Container(
-            color: Colors.grey,
-            child: _QuestionView(questions[index]),
-          );
-        },
-      )
-    );
-  }
-
   // Create QuestionBar with Hiden Button to Expand Reading Content 
   Widget _QuestionBar(isHidden) {
     return Container(
+            height: 50,
             color: Colors.cyan,
             child: Row(
               children: [
