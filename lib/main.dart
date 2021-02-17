@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ielts/constants.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'Product.dart';
 
@@ -274,7 +276,8 @@ class _ReadingViewState extends State<ReadingView> {
             _QuitReadingView(size),
             _ReadingContentView(size),
             // _QuestionBar(isHidden),
-           _QuestionPageView(size, isHidden),
+          //  _QuestionPageView(size, isHidden),
+          _QuestionSlider(size, isHidden),
           ],
         ),
       )
@@ -391,6 +394,27 @@ class _ReadingViewState extends State<ReadingView> {
       ],
     );
   }
+  
+  // Create QuestionCarouselSlider 
+  Widget _QuestionSlider(size, isHidden){
+    return 
+      CarouselSlider(
+        options: CarouselOptions(
+          viewportFraction: 1.0,
+          enlargeCenterPage: true
+        ),
+        items: questions.map((question) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              color: Colors.grey,
+              child:  _QuestionView(question),
+            );
+          },
+        );
+      }).toList(),
+      );
+  }
 
   // Create QuestionPageView with Horizontal ScollView Per Page 
   Widget _QuestionPageView(size, isHidden){
@@ -399,6 +423,7 @@ class _ReadingViewState extends State<ReadingView> {
       height: isHidden ? 0 : size.height / 2.5,
       child: PageView.builder(
         itemCount: questions.length,
+        dragStartBehavior: DragStartBehavior.start,
         itemBuilder: (context, index) {
           return Container(
             color: Colors.grey,
