@@ -72,15 +72,14 @@ class _ReadingViewState extends State<ReadingView> {
   Widget build(BuildContext context){
     final size = MediaQuery.of(context).size; 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Reading"),
-      ),
-      body: Column(
-        children: [
-          _QuestionBar(isHidden),
-         _QuestionPageView(size, isHidden),
-          _ReadingContentView(size)
-        ],
+      body: SafeArea(
+              child: Column(
+          children: [
+            _QuestionBar(isHidden),
+           _QuestionPageView(size, isHidden),
+            _ReadingContentView(size)
+          ],
+        ),
       )
     );
   }
@@ -163,24 +162,10 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
-  // PageView(
-  //       children: [
-  //         Container(
-  //           color: Colors.grey,
-  //           child: _QuestionView(questions[0]),
-  //         )
-  //         ,
-  //         Container(
-  //           color: Colors.grey,
-  //           child: _QuestionView(questions[1]),
-  //         ),
-  //       ],
-  //     ),
-
   Widget _QuestionPageView(size, isHidden){
     return  Container(
       width: size.width,
-      height: isHidden ? 0 : size.height / 3.5,
+      height: isHidden ? 0 : size.height / 2.5,
       child: PageView.builder(
         itemCount: questions.length,
         itemBuilder: (context, index) {
