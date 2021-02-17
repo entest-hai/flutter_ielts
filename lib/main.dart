@@ -81,7 +81,7 @@ class Body extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-        child: Text("Women",
+        child: Text("IELTS",
         style: Theme.of(context)
             .textTheme
             .headline5
@@ -122,7 +122,7 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  List<String> categories = ["Hand bag", "Jewellery", "Footwear", "Dresses", "FountainPen"];
+  List<String> categories = ["Reading", "Listening", "Writting", "Full Test", "Vocabulary"];
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -271,12 +271,45 @@ class _ReadingViewState extends State<ReadingView> {
       body: SafeArea(
               child: Column(
           children: [
+            _QuitReadingView(size),
+            _ReadingContentView(size),
             _QuestionBar(isHidden),
            _QuestionPageView(size, isHidden),
-            _ReadingContentView(size)
           ],
         ),
       )
+    );
+  }
+
+  // Back To HomePageView 
+  Widget _QuitReadingView(size) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.pop(context);
+          }
+          ),
+       Expanded(
+         child: Container(
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: LinearProgressIndicator(
+               backgroundColor: Colors.grey,
+               valueColor: new AlwaysStoppedAnimation<Color>(Colors.cyan),
+               value: 0.5,
+               minHeight: 6,
+               
+           ),
+            ),
+         ),
+       ),
+        IconButton(
+          icon: Icon(Icons.person),
+          onPressed: () {}
+           ) 
+      ],
     );
   }
 
@@ -424,7 +457,7 @@ class _ReadingViewState extends State<ReadingView> {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.normal,
-              color: Colors.blue
+              color: Colors.black
             ),
             ),
           ),
