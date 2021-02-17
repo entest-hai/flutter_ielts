@@ -273,7 +273,7 @@ class _ReadingViewState extends State<ReadingView> {
           children: [
             _QuitReadingView(size),
             _ReadingContentView(size),
-            _QuestionBar(isHidden),
+            // _QuestionBar(isHidden),
            _QuestionPageView(size, isHidden),
           ],
         ),
