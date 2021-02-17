@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_ielts/constants.dart';
 import 'dart:math' as math;
+import 'Product.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,20 +18,214 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ReadingView()
+      home: HomePageView()
+    );
+  }
+}
+
+// HomePageView with GridView 
+class HomePageView extends StatefulWidget {
+  @override 
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePageView> {
+  @override 
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: Body(),
+    );
+  }
+
+   AppBar buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leading: IconButton(
+        icon: Icon(
+          Icons.person,
+          size: 20,
+          color: Colors.black,
+        ),
+        onPressed: () {},
+      ),
+      actions: [
+        IconButton(
+            icon: Icon(
+              Icons.search,
+              size: 20,
+              color: Colors.black,
+            ),
+            onPressed: () {}
+            ),
+        IconButton(
+            icon: Icon(
+              Icons.add_shopping_cart,
+              size: 20,
+              color: Colors.black,
+            ),
+            onPressed: () {}),
+        SizedBox(width: kDefaultPaddin / 2 ,)
+      ],
+    );
+  }
+}
+
+class Body extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+        child: Text("Women",
+        style: Theme.of(context)
+            .textTheme
+            .headline5
+            .copyWith(fontWeight: FontWeight.bold),
+        )
+        ),
+        Categories(),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+            child: GridView.builder(
+                itemCount: products.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: kDefaultPaddin,
+                    crossAxisSpacing: kDefaultPaddin,
+                    childAspectRatio: 0.75
+                ),
+                itemBuilder: (context, index) => ItemCard(
+                  product: products[index],
+                  press: () => Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => ReadingView()
+                    )
+                  ),
+                )
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Categories extends StatefulWidget {
+  @override
+  _CategoriesState createState() => _CategoriesState();
+}
+
+class _CategoriesState extends State<Categories> {
+  List<String> categories = ["Hand bag", "Jewellery", "Footwear", "Dresses", "FountainPen"];
+  int selectedIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin),
+        child: SizedBox(
+      height: 25,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: categories.length,
+          itemBuilder: (context, index) => buildCategory(index)),
+    ),
+    );
+  }
+
+  Widget buildCategory(int index){
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              categories[index],
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: selectedIndex == index ? kTextColor : kTextLightColor,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: kDefaultPaddin / 4),
+              height: 2,
+              width: 30,
+              color: selectedIndex == index ? Colors.black : Colors.transparent,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ItemCard extends StatelessWidget {
+  final Product product;
+  final Function press;
+  const ItemCard({
+    Key key,
+    this.product,
+    this.press
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: press,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(kDefaultPaddin),
+              // height: 180,
+              // width: 160,
+              decoration: BoxDecoration(
+                  color: product.color,
+                  borderRadius: BorderRadius.circular(16)
+              ),
+              child: Image.asset(product.image),
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin / 4),
+              child: Text(
+                product.title,
+                style: TextStyle(
+                    color: kTextLightColor
+                ),
+              )
+          ),
+          Text("\$${product.price}", style: TextStyle(
+            fontWeight: FontWeight.bold,
+
+          ),)
+        ],
+      ),
     );
   }
 }
 
 
-
-// Test Container Height Collapse 
+// Reading View 
 class ReadingView extends StatefulWidget {
   @override 
   _ReadingViewState createState() => _ReadingViewState();
 }
 
-
+// Reading View State with QuestionModel Data 
 class _ReadingViewState extends State<ReadingView> {
 
   bool isHidden = false;
@@ -84,6 +280,7 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
+  // Create QuestionView with Question and Option 
   Widget _QuestionView(QuestionModel question) {
     return ListView(
       children: [
@@ -162,6 +359,7 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
+  // Create QuestionPageView with Horizontal ScollView Per Page 
   Widget _QuestionPageView(size, isHidden){
     return  Container(
       width: size.width,
@@ -178,7 +376,7 @@ class _ReadingViewState extends State<ReadingView> {
     );
   }
 
-
+  // Create QuestionBar with Hiden Button to Expand Reading Content 
   Widget _QuestionBar(isHidden) {
     return Container(
             color: Colors.cyan,
@@ -214,6 +412,7 @@ class _ReadingViewState extends State<ReadingView> {
           );
   }
 
+  // ReadingContentView with Scroll Vertically 
   Widget _ReadingContentView(size){
     return Expanded(
         child: Container(
@@ -240,6 +439,7 @@ class _ReadingViewState extends State<ReadingView> {
   }
 }
 
+// QuestionModel 
 class QuestionModel {
   final String question; 
   final String optionA;
