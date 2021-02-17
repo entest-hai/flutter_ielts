@@ -403,7 +403,7 @@ class _ReadingViewState extends State<ReadingView> {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.grey)
                 ),
-                onPressed: collapse,
+                onPressed: () => Navigator.pop(context),
                 child: Text("Submit", style: TextStyle(
                   color: Colors.white
                 ),)) 
