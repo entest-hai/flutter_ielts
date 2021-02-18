@@ -1,13 +1,13 @@
 import 'dart:ui';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ielts/constants.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'Product.dart';
+import 'Vocabulary.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(VocabularyApp());
 }
 
 class MyApp extends StatelessWidget {
