@@ -12,7 +12,7 @@ class VocabularyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: BlocProvider<WordCardsBloc>(
-        create: (context) => WordCardsBloc()..add(AddCardEvent()),
+        create: (context) => WordCardsBloc()..add(LoadWordCardsEvent()),
         child: VocalbularyNavigator(),),
     );
   }
@@ -85,6 +85,12 @@ class WordCardView extends StatefulWidget {
 }
 
 class _WordCardState extends State<WordCardView> {
+
+  // TODO validate text field before save
+
+  final wordController = TextEditingController();
+  final descController = TextEditingController();
+
   @override 
   Widget build(BuildContext context){
     return BlocBuilder<WordCardsBloc, WordCardsState>(
@@ -96,7 +102,13 @@ class _WordCardState extends State<WordCardView> {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              BlocProvider.of<WordCardsBloc>(context).add(AddCardEvent());
+              BlocProvider.of<WordCardsBloc>(context).add(
+                AddCardEvent(
+                  card: WordCard(
+                    word: wordController.text,
+                    description: descController.text)
+                    )
+                    );
             }
             )
         ],
@@ -105,6 +117,7 @@ class _WordCardState extends State<WordCardView> {
         children: [
           Container(
             child: TextField(
+              controller: wordController,
               decoration: InputDecoration(
                 hintText: "New Word",
                 border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
@@ -113,6 +126,7 @@ class _WordCardState extends State<WordCardView> {
           ),
           Container(
             child: TextField(
+              controller: descController,
               decoration: InputDecoration(
                 hintText: "Description",
                 border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
@@ -135,16 +149,15 @@ class WordCard {
 }
 
 class DataService {
-  List<WordCard> cards = [
-    WordCard(word: "professional", description: "something requires take a long time"),
-    WordCard(word: "level", description: "indicate strength of something"),
-    WordCard(word: "retrieve", description: "get something from something"),
-    WordCard(word: "extract", description: "get or refine thing from something")
-  ];
+  List<WordCard> cards;
+  DataService({this.cards});
 
-  List<WordCard> getWordCards() {
-    return cards;
-  }
+  // TODO API call 
+
+  // List<WordCard> getWordCards() {
+  //   print("call dataservice ${cards.length}");
+  //   return cards;
+  // }
 }
 
 abstract class WordCardsEvent {}
@@ -156,7 +169,10 @@ class LoadWordCardsEvent extends WordCardsEvent {}
 
 class LoadingWordCardsState extends WordCardsState {}
 
-class AddCardEvent extends WordCardsEvent {}
+class AddCardEvent extends WordCardsEvent {
+  final WordCard card;
+  AddCardEvent({this.card});
+}
 
 class AddCardState extends WordCardsState {
   List<WordCard> cards;
@@ -174,21 +190,23 @@ class FailedToLoadWordCardsState extends WordCardsState {
 }
 
 class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
-  final _dataService = DataService();
+  final _dataService = DataService(cards: []);
   WordCardsBloc() : super(LoadingWordCardsState());
 
   @override
   Stream<WordCardsState> mapEventToState(WordCardsEvent event) async* {
+    final cards = _dataService.cards;
+
     if (event is AddCardEvent){
-      var cards = _dataService.getWordCards();
-      cards.add(WordCard(word: "New", description: "something"));
+      print("add event ${cards.length}");
+      cards.add(event.card);
       yield LoadedWordCardsState(cards: cards);
     }
 
     if (event is LoadWordCardsEvent) {
       yield LoadingWordCardsState();
       try {
-        final cards = _dataService.getWordCards();
+        print("load event");
         yield LoadedWordCardsState(cards: cards);
       } catch (e) {
         yield FailedToLoadWordCardsState(error: e);
