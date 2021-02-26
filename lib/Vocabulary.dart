@@ -13,7 +13,10 @@ class VocabularyApp extends StatelessWidget {
       ),
       home: BlocProvider<WordCardsBloc>(
         create: (context) => WordCardsBloc()..add(LoadWordCardsEvent()),
-        child: VocalbularyNavigator(),),
+        // child: VocalbularyNavigator(),
+        child: DetailView(),
+
+        ),
     );
   }
 }
@@ -213,6 +216,98 @@ class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
       }
     }
   }
-
 }
+
+// Detai View of A Vocabulary 
+class DetailView extends StatelessWidget {
+
+  final List<String> synonyms = [
+    "detect",
+    "find",
+    "notice",
+    "observe",
+    "describe",
+    "distinguish",
+    "identify",
+    "key",
+    "key out",
+    "name",
+    "find out",
+    "get a line",
+    "get wind",
+    "get word",
+    "hear",
+    "learn",
+    "pick up",
+    "see",
+    "break",
+    "bring out",
+    "disclose",
+    "divulge",
+    "expose",
+    "give away",
+    "let on",
+    "let out",
+    "reveal",
+    "uncover",
+    "unwrap",
+    "attain",
+    "chance on",
+    "chance upon",
+    "come across",
+    "come upon",
+    "fall upon",
+    "happen upon",
+    "light upon",
+    "strike"];
+
+  @override 
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Discover"),
+        ),
+      body: Center(child: Column(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Card(child: ListTile(title: Text("Definition: what you have typed"),),)
+            ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: Colors.grey,
+              child: Column(
+                children: [
+                 Padding(
+                   padding: const EdgeInsets.all(10.0),
+                   child: Text("Synonym", style: TextStyle(
+                     fontSize: 20,
+                     fontWeight: FontWeight.bold,
+                   ),
+                   ),
+                 ), 
+                 Expanded(
+                   child:  ListView.builder(
+              itemCount: synonyms.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: ListTile(title: Text(synonyms[index]),),
+                );
+              }
+              ),
+                 )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),),
+    );
+  }
+}
+
+
 
