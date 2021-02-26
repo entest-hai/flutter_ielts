@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VocabularyApp extends StatelessWidget {
-  @override 
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -15,24 +15,19 @@ class VocabularyApp extends StatelessWidget {
         create: (context) => WordCardsBloc()..add(LoadWordCardsEvent()),
         // child: VocalbularyNavigator(),
         child: DetailView(),
-
-        ),
+      ),
     );
   }
 }
 
 class VocalbularyNavigator extends StatelessWidget {
-  @override 
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<WordCardsBloc, WordCardsState>(
       builder: (context, cards) {
         return Navigator(
-          pages: [
-            MaterialPage(child: VocabularyView())
-          ],
-          onPopPage: (route, result) {
-
-          },
+          pages: [MaterialPage(child: VocabularyView())],
+          onPopPage: (route, result) {},
         );
       },
     );
@@ -40,28 +35,31 @@ class VocalbularyNavigator extends StatelessWidget {
 }
 
 class VocabularyView extends StatefulWidget {
-  @override 
+  @override
   State<StatefulWidget> createState() => _VocabularyView();
 }
 
 class _VocabularyView extends State<VocabularyView> {
-  @override 
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Desk"),),
+      appBar: AppBar(
+        title: Text("Desk"),
+      ),
       body: BlocBuilder<WordCardsBloc, WordCardsState>(
         builder: (context, state) {
           if (state is LoadingWordCardsState) {
             return Center(child: CircularProgressIndicator());
           } else if (state is LoadedWordCardsState) {
             return ListView.builder(
-              itemCount: state.cards.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(title: Text(state.cards[index].word),),
-                );
-              }
-              );
+                itemCount: state.cards.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(state.cards[index].word),
+                    ),
+                  );
+                });
           } else {
             return Center(
               child: Text("Error occured"),
@@ -73,9 +71,7 @@ class _VocabularyView extends State<VocabularyView> {
         child: Icon(Icons.add),
         onPressed: () => {
           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => WordCardView())
-            ),
+              context, MaterialPageRoute(builder: (context) => WordCardView())),
         },
       ),
     );
@@ -83,63 +79,57 @@ class _VocabularyView extends State<VocabularyView> {
 }
 
 class WordCardView extends StatefulWidget {
-  @override 
+  @override
   State<StatefulWidget> createState() => _WordCardState();
 }
 
 class _WordCardState extends State<WordCardView> {
-
   // TODO validate text field before save
 
   final wordController = TextEditingController();
   final descController = TextEditingController();
 
-  @override 
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<WordCardsBloc, WordCardsState>(
       builder: (context, cards) {
         return Scaffold(
-      appBar: AppBar(
-        title: Text("Detail"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              BlocProvider.of<WordCardsBloc>(context).add(
-                AddCardEvent(
-                  card: WordCard(
-                    word: wordController.text,
-                    description: descController.text)
-                    )
-                    );
-            }
-            )
-        ],
-        ),
-      body: Column(
-        children: [
-          Container(
-            child: TextField(
-              controller: wordController,
-              decoration: InputDecoration(
-                hintText: "New Word",
-                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
-              ),
-            ),
+          appBar: AppBar(
+            title: Text("Detail"),
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.save),
+                  onPressed: () {
+                    BlocProvider.of<WordCardsBloc>(context).add(AddCardEvent(
+                        card: WordCard(
+                            word: wordController.text,
+                            description: descController.text)));
+                  })
+            ],
           ),
-          Container(
-            child: TextField(
-              controller: descController,
-              decoration: InputDecoration(
-                hintText: "Description",
-                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(12)))
+          body: Column(
+            children: [
+              Container(
+                child: TextField(
+                  controller: wordController,
+                  decoration: InputDecoration(
+                      hintText: "New Word",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)))),
+                ),
               ),
-                
-            ),
-          )
-        ],
-      ),
-    );
+              Container(
+                child: TextField(
+                  controller: descController,
+                  decoration: InputDecoration(
+                      hintText: "Description",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)))),
+                ),
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -155,7 +145,7 @@ class DataService {
   List<WordCard> cards;
   DataService({this.cards});
 
-  // TODO API call 
+  // TODO API call
 
   // List<WordCard> getWordCards() {
   //   print("call dataservice ${cards.length}");
@@ -166,7 +156,6 @@ class DataService {
 abstract class WordCardsEvent {}
 
 abstract class WordCardsState {}
-
 
 class LoadWordCardsEvent extends WordCardsEvent {}
 
@@ -200,7 +189,7 @@ class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
   Stream<WordCardsState> mapEventToState(WordCardsEvent event) async* {
     final cards = _dataService.cards;
 
-    if (event is AddCardEvent){
+    if (event is AddCardEvent) {
       print("add event ${cards.length}");
       cards.add(event.card);
       yield LoadedWordCardsState(cards: cards);
@@ -218,9 +207,8 @@ class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
   }
 }
 
-// Detai View of A Vocabulary 
+// Detai View of A Vocabulary
 class DetailView extends StatelessWidget {
-
   final List<String> synonyms = [
     "detect",
     "find",
@@ -259,55 +247,61 @@ class DetailView extends StatelessWidget {
     "fall upon",
     "happen upon",
     "light upon",
-    "strike"];
+    "strike"
+  ];
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Discover"),
-        ),
-      body: Center(child: Column(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Card(child: ListTile(title: Text("Definition: what you have typed"),),)
-            ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              color: Colors.grey,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Expanded(
+                flex: 1,
+                child: Card(
+                  child: ListTile(
+                    title: Text("Definition: what you have typed"),
+                  ),
+                )),
+            Expanded(
+              flex: 2,
+              // child: Expanded(
+              // color: Colors.grey,
               child: Column(
                 children: [
-                 Padding(
-                   padding: const EdgeInsets.all(10.0),
-                   child: Text("Synonym", style: TextStyle(
-                     fontSize: 20,
-                     fontWeight: FontWeight.bold,
-                   ),
-                   ),
-                 ), 
-                 Expanded(
-                   child:  ListView.builder(
-              itemCount: synonyms.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(title: Text(synonyms[index]),),
-                );
-              }
-              ),
-                 )
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      "Synonym",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: synonyms.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: ListTile(
+                              title: Text(synonyms[index]),
+                            ),
+                          );
+                        }),
+                  )
                 ],
               ),
-            ),
-          )
-        ],
-      ),),
+              // ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
-
-
-

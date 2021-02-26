@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_ielts/constants.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -11,28 +10,27 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  @override 
-  Widget build(BuildContext context){
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: HomePageView()
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: HomePageView());
   }
 }
 
-// HomePageView with GridView 
+// HomePageView with GridView
 class HomePageView extends StatefulWidget {
-  @override 
+  @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePageView> {
-  @override 
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -41,7 +39,7 @@ class _HomePageState extends State<HomePageView> {
     );
   }
 
-   AppBar buildAppBar() {
+  AppBar buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -60,8 +58,7 @@ class _HomePageState extends State<HomePageView> {
               size: 20,
               color: Colors.black,
             ),
-            onPressed: () {}
-            ),
+            onPressed: () {}),
         IconButton(
             icon: Icon(
               Icons.add_shopping_cart,
@@ -69,7 +66,9 @@ class _HomePageState extends State<HomePageView> {
               color: Colors.black,
             ),
             onPressed: () {}),
-        SizedBox(width: kDefaultPaddin / 2 ,)
+        SizedBox(
+          width: kDefaultPaddin / 2,
+        )
       ],
     );
   }
@@ -82,14 +81,15 @@ class Body extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
-        child: Text("IELTS",
-        style: Theme.of(context)
-            .textTheme
-            .headline5
-            .copyWith(fontWeight: FontWeight.bold),
-        )
-        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: kDefaultPaddin),
+            child: Text(
+              "IELTS",
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  .copyWith(fontWeight: FontWeight.bold),
+            )),
         Categories(),
         Expanded(
           child: Padding(
@@ -100,17 +100,14 @@ class Body extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: kDefaultPaddin,
                     crossAxisSpacing: kDefaultPaddin,
-                    childAspectRatio: 0.75
-                ),
+                    childAspectRatio: 0.75),
                 itemBuilder: (context, index) => ItemCard(
-                  product: products[index],
-                  press: () => Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => ReadingView()
-                    )
-                  ),
-                )
-            ),
+                      product: products[index],
+                      press: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ReadingView())),
+                    )),
           ),
         ),
       ],
@@ -124,24 +121,30 @@ class Categories extends StatefulWidget {
 }
 
 class _CategoriesState extends State<Categories> {
-  List<String> categories = ["Reading", "Listening", "Writting", "Full Test", "Vocabulary"];
+  List<String> categories = [
+    "Reading",
+    "Listening",
+    "Writting",
+    "Full Test",
+    "Vocabulary"
+  ];
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin),
-        child: SizedBox(
-      height: 25,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          itemBuilder: (context, index) => buildCategory(index)),
-    ),
+      padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin),
+      child: SizedBox(
+        height: 25,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: categories.length,
+            itemBuilder: (context, index) => buildCategory(index)),
+      ),
     );
   }
 
-  Widget buildCategory(int index){
+  Widget buildCategory(int index) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -176,11 +179,7 @@ class _CategoriesState extends State<Categories> {
 class ItemCard extends StatelessWidget {
   final Product product;
   final Function press;
-  const ItemCard({
-    Key key,
-    this.product,
-    this.press
-  }) : super(key: key);
+  const ItemCard({Key key, this.product, this.press}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -196,8 +195,7 @@ class ItemCard extends StatelessWidget {
               // width: 160,
               decoration: BoxDecoration(
                   color: product.color,
-                  borderRadius: BorderRadius.circular(16)
-              ),
+                  borderRadius: BorderRadius.circular(16)),
               child: Image.asset(product.image),
             ),
           ),
@@ -205,147 +203,128 @@ class ItemCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin / 4),
               child: Text(
                 product.title,
-                style: TextStyle(
-                    color: kTextLightColor
-                ),
-              )
-          ),
-          Text("\$${product.price}", style: TextStyle(
-            fontWeight: FontWeight.bold,
-
-          ),)
+                style: TextStyle(color: kTextLightColor),
+              )),
+          Text(
+            "\$${product.price}",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          )
         ],
       ),
     );
   }
 }
 
-
-// Reading View 
+// Reading View
 class ReadingView extends StatefulWidget {
-  @override 
+  @override
   _ReadingViewState createState() => _ReadingViewState();
 }
 
-// Reading View State with QuestionModel Data 
+// Reading View State with QuestionModel Data
 class _ReadingViewState extends State<ReadingView> {
-
   bool isHidden = false;
   List<QuestionModel> questions = [
-   QuestionModel(
-      question: "What is the highest paid programming language in 2021?",
-      optionA: "C++",
-      optionB: "C++",
-      optionC: "Python",
-      optionD: "Flutter",
-      selected: -1
-    ),
     QuestionModel(
-      question: "Where is the best place to work?",
-      optionA: "Singapore",
-      optionB: "United State",
-      optionC: "Israel",
-      optionD: "Germany",
-      selected: -1
-    ),
+        question: "What is the highest paid programming language in 2021?",
+        optionA: "C++",
+        optionB: "C++",
+        optionC: "Python",
+        optionD: "Flutter",
+        selected: -1),
     QuestionModel(
-      question: "Why AWS is so popular today?",
-      optionA: "Mature",
-      optionB: "Friendly",
-      optionC: "Professional",
-      optionD: "Cheap",
-      selected: -1
-    ),
+        question: "Where is the best place to work?",
+        optionA: "Singapore",
+        optionB: "United State",
+        optionC: "Israel",
+        optionD: "Germany",
+        selected: -1),
     QuestionModel(
-      question: "Where is saftest place on earth?",
-      optionA: "Japan",
-      optionB: "United State",
-      optionC: "Vietnam",
-      optionD: "North Korea",
-      selected: -1
-    )
+        question: "Why AWS is so popular today?",
+        optionA: "Mature",
+        optionB: "Friendly",
+        optionC: "Professional",
+        optionD: "Cheap",
+        selected: -1),
+    QuestionModel(
+        question: "Where is saftest place on earth?",
+        optionA: "Japan",
+        optionB: "United State",
+        optionC: "Vietnam",
+        optionD: "North Korea",
+        selected: -1)
   ];
 
-  @override 
-  Widget build(BuildContext context){
-    final size = MediaQuery.of(context).size; 
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-              child: Column(
-          children: [
-            _QuitReadingView(size),
-            _ReadingContentView(size),
-            // _QuestionBar(isHidden),
+        body: SafeArea(
+      child: Column(
+        children: [
+          _QuitReadingView(size),
+          _ReadingContentView(size),
+          // _QuestionBar(isHidden),
           //  _QuestionPageView(size, isHidden),
           _QuestionSlider(size, isHidden),
-          ],
-        ),
-      )
-    );
+        ],
+      ),
+    ));
   }
 
-  // Back To HomePageView 
+  // Back To HomePageView
   Widget _QuitReadingView(size) {
     return Row(
       children: [
         IconButton(
-          icon: Icon(Icons.close),
-          onPressed: () {
-            Navigator.pop(context);
-          }
-          ),
-       Expanded(
-         child: Container(
+            icon: Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        Expanded(
+          child: Container(
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               child: LinearProgressIndicator(
-               backgroundColor: Colors.grey,
-               valueColor: new AlwaysStoppedAnimation<Color>(Colors.cyan),
-               value: 0.5,
-               minHeight: 6,
-               
-           ),
+                backgroundColor: Colors.grey,
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.cyan),
+                value: 0.5,
+                minHeight: 6,
+              ),
             ),
-         ),
-       ),
-        IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {}
-           ) 
+          ),
+        ),
+        IconButton(icon: Icon(Icons.person), onPressed: () {})
       ],
     );
   }
 
-  // Create QuestionView with Question and Option 
+  // Create QuestionView with Question and Option
   Widget _QuestionView(QuestionModel question, bool isHidden) {
     return ListView(
       children: [
         _QuestionBar(isHidden),
         Card(
-            elevation: 0,
-            color: Colors.grey,
-            child: ListTile(
+          elevation: 0,
+          color: Colors.grey,
+          child: ListTile(
             title: Text(
               question.question,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold
-              ),
-              ),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
             onTap: () {
               print("tap question");
             },
           ),
         ),
         Card(
-            child: ListTile(
+          child: ListTile(
             title: Text(
               question.optionA,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.normal
-              ),
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+            ),
             onTap: () {
               setState(() {
                 question.selected = 0;
@@ -353,124 +332,122 @@ class _ReadingViewState extends State<ReadingView> {
               print("tap option answer $question.selected ");
             },
           ),
-          color:  question.selected  == 0 ? Colors.yellow : Colors.white,
+          color: question.selected == 0 ? Colors.yellow : Colors.white,
         ),
-       Card(
-            child: ListTile(
+        Card(
+          child: ListTile(
             title: Text(question.optionB),
             onTap: () {
               setState(() {
-                 question.selected  = 1;
+                question.selected = 1;
               });
               print("tap option answer $question.selected ");
             },
           ),
-          color:  question.selected  == 1 ? Colors.yellow : Colors.white,
+          color: question.selected == 1 ? Colors.yellow : Colors.white,
         ),
         Card(
-            child: ListTile(
+          child: ListTile(
             title: Text(question.optionC),
             onTap: () {
               setState(() {
-                 question.selected  = 2;
+                question.selected = 2;
               });
               print("tap option answer $question.selected ");
             },
           ),
-          color:  question.selected  == 2 ? Colors.yellow : Colors.white,
+          color: question.selected == 2 ? Colors.yellow : Colors.white,
         ),
         Card(
-            child: ListTile(
+          child: ListTile(
             title: Text(question.optionD),
             onTap: () {
               setState(() {
-                 question.selected  = 3;
+                question.selected = 3;
               });
               print("tap option answer $question.selected ");
             },
           ),
-          color:  question.selected  == 3 ? Colors.yellow : Colors.white,
+          color: question.selected == 3 ? Colors.yellow : Colors.white,
         ),
-        
       ],
     );
   }
-  
-  // Create QuestionCarouselSlider 
-  Widget _QuestionSlider(size, isHidden){
-    return 
-      CarouselSlider(
-        options: CarouselOptions(
+
+  // Create QuestionCarouselSlider
+  Widget _QuestionSlider(size, isHidden) {
+    return CarouselSlider(
+      options: CarouselOptions(
           height: isHidden ? 50 : size.height / 3.0,
           viewportFraction: 1.0,
-          enlargeCenterPage: true
-        ),
-        items: questions.map((question) {
+          enlargeCenterPage: true),
+      items: questions.map((question) {
         return Builder(
           builder: (BuildContext context) {
             return Container(
               color: Colors.grey,
-              child:  _QuestionView(question, isHidden),
+              child: _QuestionView(question, isHidden),
             );
           },
         );
       }).toList(),
-      );
+    );
   }
 
-  // Create QuestionBar with Hiden Button to Expand Reading Content 
+  // Create QuestionBar with Hiden Button to Expand Reading Content
   Widget _QuestionBar(isHidden) {
     return Container(
-            height: 50,
-            color: Colors.cyan,
-            child: Row(
-              children: [
-              IconButton(
-                color: Colors.white,
-                icon: Transform.rotate(
+      height: 50,
+      color: Colors.cyan,
+      child: Row(
+        children: [
+          IconButton(
+              color: Colors.white,
+              icon: Transform.rotate(
                   angle: isHidden ? 270 * math.pi / 180 : 90 * math.pi / 180,
                   child: Icon(Icons.chevron_left)),
-                iconSize: 24,
-                onPressed: collapse),
-                
-               Expanded(
-                 child: Center(child: 
-                 Text("Question 1/10", style: TextStyle(
-                   fontSize: 15,
-                   fontWeight: FontWeight.bold,
-                   color: Colors.white,
-                 ),)),
-               ),
-
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.grey)
-                ),
-                onPressed: () => Navigator.pop(context),
-                child: Text("Submit", style: TextStyle(
-                  color: Colors.white
-                ),)) 
-                
-            ],),
-          );
+              iconSize: 24,
+              onPressed: collapse),
+          Expanded(
+            child: Center(
+                child: Text(
+              "Question 1/10",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            )),
+          ),
+          TextButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.grey)),
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "Submit",
+                style: TextStyle(color: Colors.white),
+              ))
+        ],
+      ),
+    );
   }
 
-  // ReadingContentView with Scroll Vertically 
-  Widget _ReadingContentView(size){
+  // ReadingContentView with Scroll Vertically
+  Widget _ReadingContentView(size) {
     return Expanded(
-        child: Container(
-          color: Colors.white,
-          width: size.width,
-          height: size.height,
-          child: Center(
-            child: Text("Reading Content",
+      child: Container(
+        color: Colors.white,
+        width: size.width,
+        height: size.height,
+        child: Center(
+          child: Text(
+            "Reading Content",
             style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.normal,
-              color: Colors.black
-            ),
-            ),
+                fontSize: 15,
+                fontWeight: FontWeight.normal,
+                color: Colors.black),
           ),
+        ),
       ),
     );
   }
@@ -482,19 +459,19 @@ class _ReadingViewState extends State<ReadingView> {
   }
 }
 
-// QuestionModel 
+// QuestionModel
 class QuestionModel {
-  final String question; 
+  final String question;
   final String optionA;
   final String optionB;
   final String optionC;
   final String optionD;
   int selected;
-  QuestionModel({
-    this.selected,
-    this.question,
-    this.optionA,
-    this.optionB,
-    this.optionC,
-    this.optionD});
+  QuestionModel(
+      {this.selected,
+      this.question,
+      this.optionA,
+      this.optionB,
+      this.optionC,
+      this.optionD});
 }
