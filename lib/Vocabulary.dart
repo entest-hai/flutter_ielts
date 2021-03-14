@@ -11,10 +11,11 @@ class VocabularyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BlocProvider<WordCardsBloc>(
-        create: (context) => WordCardsBloc()..add(LoadWordCardsEvent()),
-        child: VocalbularyNavigator(),
-        // child: DetailView(),
+      home: MultiBlocProvider(providers: [
+        BlocProvider(create: (context) => WordCardsBloc()..add(LoadWordCardsEvent())),
+        BlocProvider(create: (context) => SynonymCubit())
+      ],
+      child: VocalbularyNavigator(),
       ),
     );
   }
@@ -39,9 +40,10 @@ class _VocalbularyNavigatorState extends State<VocalbularyNavigator> {
             MaterialPage(child: VocabularyView(didSelecteWord: (word) {
               setState(() {
                 _selectedWord = word;
+
               });
             })),
-            if (_selectedWord != null) MaterialPage(child: DetailView())
+            if (_selectedWord != null) MaterialPage(child: DetailView(selectedWord: _selectedWord,))
           ],
           onPopPage: (route, result) {
             final page = route.settings as MaterialPage;
@@ -86,7 +88,8 @@ class _VocabularyView extends State<VocabularyView> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      didSelecteWord(state.cards[index].word);
+                      // BlocProvider.of<SynonymCubit>(context).fetchSynonym(state.cards[index].word);
+                      didSelecteWord("Test");
                     },
                     child: Card(
                       child: ListTile(
@@ -234,61 +237,47 @@ class Synonym {
 }
 
 // Synonym Repository
-
+class SynonymRepository {
+  Future<List<String>> fetchSynonym() async {
+    final List<String> synonym = [];
+    synonym.add("OK");
+    print("fetch synonym ");
+    return synonym;
+  }
+}
 
 // Synonym Cubit
+abstract class SynonymState {}
+
+class LoadingSynonym extends SynonymState {}
+
+class LoadedSynonymSuccess extends SynonymState {
+  final List<String> synonym;
+  LoadedSynonymSuccess({this.synonym});
+}
+
+class SynonymCubit extends Cubit<SynonymState> {
+  SynonymRepository _synonymRepository = SynonymRepository();
+  SynonymCubit() : super(LoadingSynonym());
+
+  void fetchSynonym(String word) async {
+    final synonym = await _synonymRepository.fetchSynonym();
+    emit(LoadedSynonymSuccess(synonym: synonym));
+  }
+}
 
 // Synonym Detail View
 class DetailView extends StatelessWidget {
+  final String selectedWord;
+  DetailView({this.selectedWord});
   static const valueKey = ValueKey("DetailView");
-  final List<String> synonyms = [
-    "detect",
-    "find",
-    "notice",
-    "observe",
-    "describe",
-    "distinguish",
-    "identify",
-    "key",
-    "key out",
-    "name",
-    "find out",
-    "get a line",
-    "get wind",
-    "get word",
-    "hear",
-    "learn",
-    "pick up",
-    "see",
-    "break",
-    "bring out",
-    "disclose",
-    "divulge",
-    "expose",
-    "give away",
-    "let on",
-    "let out",
-    "reveal",
-    "uncover",
-    "unwrap",
-    "attain",
-    "chance on",
-    "chance upon",
-    "come across",
-    "come upon",
-    "fall upon",
-    "happen upon",
-    "light upon",
-    "strike"
-  ];
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Discover"),
+        title: Text("$selectedWord"),
       ),
       body: Center(
         child: Column(
@@ -317,15 +306,29 @@ class DetailView extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                        itemCount: synonyms.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(synonyms[index]),
-                            ),
-                          );
-                        }),
+                    child: BlocBuilder<SynonymCubit, SynonymState>(builder: (context, state){
+                      if (state is LoadingSynonym){
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is LoadedSynonymSuccess){
+                        return  ListView.builder(
+                            itemCount: state.synonym.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                child: ListTile(
+                                  title: Text(state.synonym[index]),
+                                ),
+                              );
+                            }
+                        );
+                      } else {
+                        return Center(
+                          child: Text("Exception"),
+                        );
+                      }
+                    },
+                    ),
                   )
                 ],
               ),
