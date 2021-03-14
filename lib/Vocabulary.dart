@@ -43,7 +43,9 @@ class _VocalbularyNavigatorState extends State<VocalbularyNavigator> {
 
               });
             })),
-            if (_selectedWord != null) MaterialPage(child: DetailView(selectedWord: _selectedWord,))
+            if (_selectedWord != null) MaterialPage(
+                key: DetailView.valueKey,
+                child: DetailView(selectedWord: _selectedWord,))
           ],
           onPopPage: (route, result) {
             final page = route.settings as MaterialPage;
@@ -88,7 +90,7 @@ class _VocabularyView extends State<VocabularyView> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      // BlocProvider.of<SynonymCubit>(context).fetchSynonym(state.cards[index].word);
+                      BlocProvider.of<SynonymCubit>(context).fetchSynonym(state.cards[index].word);
                       didSelecteWord("Test");
                     },
                     child: Card(
@@ -269,8 +271,9 @@ class SynonymCubit extends Cubit<SynonymState> {
 // Synonym Detail View
 class DetailView extends StatelessWidget {
   final String selectedWord;
-  DetailView({this.selectedWord});
   static const valueKey = ValueKey("DetailView");
+  DetailView({Key key, this.selectedWord}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
