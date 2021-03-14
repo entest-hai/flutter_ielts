@@ -13,21 +13,43 @@ class VocabularyApp extends StatelessWidget {
       ),
       home: BlocProvider<WordCardsBloc>(
         create: (context) => WordCardsBloc()..add(LoadWordCardsEvent()),
-        // child: VocalbularyNavigator(),
-        child: DetailView(),
+        child: VocalbularyNavigator(),
+        // child: DetailView(),
       ),
     );
   }
 }
 
-class VocalbularyNavigator extends StatelessWidget {
+class VocalbularyNavigator extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _VocalbularyNavigatorState();
+  }
+}
+
+class _VocalbularyNavigatorState extends State<VocalbularyNavigator> {
+  String _selectedWord;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WordCardsBloc, WordCardsState>(
       builder: (context, cards) {
         return Navigator(
-          pages: [MaterialPage(child: VocabularyView())],
-          onPopPage: (route, result) {},
+          pages: [
+            MaterialPage(child: VocabularyView(didSelecteWord: (word) {
+              setState(() {
+                _selectedWord = word;
+              });
+            })),
+            if (_selectedWord != null) MaterialPage(child: DetailView())
+          ],
+          onPopPage: (route, result) {
+            final page = route.settings as MaterialPage;
+            if (page.key == DetailView.valueKey) {
+              _selectedWord = null;
+            }
+            return route.didPop(result);
+          },
         );
       },
     );
@@ -35,11 +57,19 @@ class VocalbularyNavigator extends StatelessWidget {
 }
 
 class VocabularyView extends StatefulWidget {
+  final didSelecteWord;
+  VocabularyView({this.didSelecteWord});
   @override
-  State<StatefulWidget> createState() => _VocabularyView();
+  State<StatefulWidget> createState() =>
+      _VocabularyView(didSelecteWord: didSelecteWord);
 }
 
 class _VocabularyView extends State<VocabularyView> {
+  final wordController = TextEditingController();
+  final descController = TextEditingController();
+
+  final didSelecteWord;
+  _VocabularyView({this.didSelecteWord});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,9 +84,14 @@ class _VocabularyView extends State<VocabularyView> {
             return ListView.builder(
                 itemCount: state.cards.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(state.cards[index].word),
+                  return InkWell(
+                    onTap: () {
+                      didSelecteWord(state.cards[index].word);
+                    },
+                    child: Card(
+                      child: ListTile(
+                        title: Text(state.cards[index].word),
+                      ),
                     ),
                   );
                 });
@@ -70,89 +105,73 @@ class _VocabularyView extends State<VocabularyView> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => WordCardView())),
+          showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  height: MediaQuery.of(context).size.height - 200,
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            if (wordController.text != "") {
+                              BlocProvider.of<WordCardsBloc>(context).add(
+                                  AddCardEvent(
+                                      card: WordCard(
+                                          word: wordController.text,
+                                          description: descController.text)));
+                            }
+
+                            wordController.text = "";
+                            descController.text = "";
+                            Navigator.pop(context);
+                          },
+                          child: Text("Save Word")),
+                      Container(
+                        child: TextField(
+                          controller: wordController,
+                          decoration: InputDecoration(
+                              hintText: "New Word",
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)))),
+                        ),
+                      ),
+                      Container(
+                        child: TextField(
+                          controller: descController,
+                          decoration: InputDecoration(
+                              hintText: "Description",
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)))),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              })
         },
       ),
     );
   }
 }
 
-class WordCardView extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _WordCardState();
-}
-
-class _WordCardState extends State<WordCardView> {
-  // TODO validate text field before save
-
-  final wordController = TextEditingController();
-  final descController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WordCardsBloc, WordCardsState>(
-      builder: (context, cards) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Detail"),
-            actions: [
-              IconButton(
-                  icon: Icon(Icons.save),
-                  onPressed: () {
-                    BlocProvider.of<WordCardsBloc>(context).add(AddCardEvent(
-                        card: WordCard(
-                            word: wordController.text,
-                            description: descController.text)));
-                  })
-            ],
-          ),
-          body: Column(
-            children: [
-              Container(
-                child: TextField(
-                  controller: wordController,
-                  decoration: InputDecoration(
-                      hintText: "New Word",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)))),
-                ),
-              ),
-              Container(
-                child: TextField(
-                  controller: descController,
-                  decoration: InputDecoration(
-                      hintText: "Description",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12)))),
-                ),
-              )
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
+// Word Card Data Modal
 class WordCard {
   final String word;
   final String description;
   WordCard({this.word, this.description});
 }
 
-class DataService {
+// Word Card Repository
+class WordCardRepository {
   List<WordCard> cards;
-  DataService({this.cards});
-
-  // TODO API call
-
-  // List<WordCard> getWordCards() {
-  //   print("call dataservice ${cards.length}");
-  //   return cards;
-  // }
+  WordCardRepository({this.cards});
 }
 
+// Wowrd Card Cubit and Bloc
 abstract class WordCardsEvent {}
 
 abstract class WordCardsState {}
@@ -182,12 +201,12 @@ class FailedToLoadWordCardsState extends WordCardsState {
 }
 
 class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
-  final _dataService = DataService(cards: []);
+  final _wordCardRepository = WordCardRepository(cards: []);
   WordCardsBloc() : super(LoadingWordCardsState());
 
   @override
   Stream<WordCardsState> mapEventToState(WordCardsEvent event) async* {
-    final cards = _dataService.cards;
+    final cards = _wordCardRepository.cards;
 
     if (event is AddCardEvent) {
       print("add event ${cards.length}");
@@ -207,8 +226,21 @@ class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
   }
 }
 
-// Detai View of A Vocabulary
+// Synonym Data Modal
+class Synonym {
+  final String word;
+  final List<String> synonym;
+  Synonym({this.word, this.synonym});
+}
+
+// Synonym Repository
+
+
+// Synonym Cubit
+
+// Synonym Detail View
 class DetailView extends StatelessWidget {
+  static const valueKey = ValueKey("DetailView");
   final List<String> synonyms = [
     "detect",
     "find",
