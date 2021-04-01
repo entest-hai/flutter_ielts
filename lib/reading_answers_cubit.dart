@@ -11,7 +11,10 @@ class ReadingAnswersCubit extends Cubit<ReadingAnswersState> {
   void loadQuestions(List<Question> questions) {
     print("questions loaded for answers cubit");
     emit(ReadingAnswersState(
-        submitted: false, questions: questions, numQuestionsAnswered: 0));
+        submitted: false,
+        questions: questions,
+        numQuestionsAnswered: 0,
+        correctOptions: List.generate(questions.length, (index) => -1)));
   }
 
   // Update an answer
@@ -25,14 +28,19 @@ class ReadingAnswersCubit extends Cubit<ReadingAnswersState> {
         submitted:
             this.state.numQuestionsAnswered + 1 >= this.state.questions.length
                 ? true
-                : false));
+                : false,
+        correctOptions: this.state.correctOptions));
   }
 
   // Todo submit answers to cloud
-  void submit() {
+  Future<void> submit() async {
     if (this.state.numQuestionsAnswered >= this.state.questions.length) {
       // submit answers to cloud
       print("submitted answers to cloud");
+      await Future.delayed(Duration(seconds: 2));
+      final corrects =
+          List.generate(this.state.questions.length, (index) => index);
+      emit(ReadingAnswersState(correctOptions: corrects));
     }
   }
 }

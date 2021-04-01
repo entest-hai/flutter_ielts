@@ -214,6 +214,11 @@ class _QuestionViewState extends State<QuestionView> {
                 color: question.selections[question.options.indexOf(e)]
                     ? Colors.yellow[800]
                     : Colors.white,
+                shape: (question.options.indexOf(e) != null) &&
+                        (question.options.indexOf(e) == state.correctOptions[0])
+                    ? RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.blue))
+                    : null,
               )),
         ],
       );
