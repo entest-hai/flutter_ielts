@@ -11,11 +11,13 @@ class VocabularyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MultiBlocProvider(providers: [
-        BlocProvider(create: (context) => WordCardsBloc()..add(LoadWordCardsEvent())),
-        BlocProvider(create: (context) => SynonymCubit())
-      ],
-      child: VocalbularyNavigator(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => WordCardsBloc()..add(LoadWordCardsEvent())),
+          BlocProvider(create: (context) => SynonymCubit())
+        ],
+        child: VocalbularyNavigator(),
       ),
     );
   }
@@ -40,12 +42,14 @@ class _VocalbularyNavigatorState extends State<VocalbularyNavigator> {
             MaterialPage(child: VocabularyView(didSelecteWord: (word) {
               setState(() {
                 _selectedWord = word;
-
               });
             })),
-            if (_selectedWord != null) MaterialPage(
-                key: DetailView.valueKey,
-                child: DetailView(selectedWord: _selectedWord,))
+            if (_selectedWord != null)
+              MaterialPage(
+                  key: DetailView.valueKey,
+                  child: DetailView(
+                    selectedWord: _selectedWord,
+                  ))
           ],
           onPopPage: (route, result) {
             final page = route.settings as MaterialPage;
@@ -90,7 +94,8 @@ class _VocabularyView extends State<VocabularyView> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      BlocProvider.of<SynonymCubit>(context).fetchSynonym(state.cards[index].word);
+                      BlocProvider.of<SynonymCubit>(context)
+                          .fetchSynonym(state.cards[index].word);
                       didSelecteWord("Test");
                     },
                     child: Card(
@@ -309,28 +314,28 @@ class DetailView extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: BlocBuilder<SynonymCubit, SynonymState>(builder: (context, state){
-                      if (state is LoadingSynonym){
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is LoadedSynonymSuccess){
-                        return  ListView.builder(
-                            itemCount: state.synonym.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: ListTile(
-                                  title: Text(state.synonym[index]),
-                                ),
-                              );
-                            }
-                        );
-                      } else {
-                        return Center(
-                          child: Text("Exception"),
-                        );
-                      }
-                    },
+                    child: BlocBuilder<SynonymCubit, SynonymState>(
+                      builder: (context, state) {
+                        if (state is LoadingSynonym) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (state is LoadedSynonymSuccess) {
+                          return ListView.builder(
+                              itemCount: state.synonym.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: ListTile(
+                                    title: Text(state.synonym[index]),
+                                  ),
+                                );
+                              });
+                        } else {
+                          return Center(
+                            child: Text("Exception"),
+                          );
+                        }
+                      },
                     ),
                   )
                 ],

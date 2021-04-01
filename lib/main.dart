@@ -4,9 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'Product.dart';
 import 'Vocabulary.dart';
+import 'reading_app.dart';
 
 void main() {
-  runApp(VocabularyApp());
+  runApp(ReadingApp());
+  // runApp(MyApp());
+  // runApp(VocabularyApp());
 }
 
 class MyApp extends StatelessWidget {
