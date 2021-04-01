@@ -1,5 +1,28 @@
 import 'question.dart';
 
+List<Question> mockQuestions = [
+  Question(
+    question: "1 What is the highest paid programming language in 2021?",
+    options: ["C++", "C", "Python", "Dart"],
+  ),
+  Question(
+    question: "2 What is the highest paid programming language in 2021?",
+    options: ["C++", "C", "Python", "Dart"],
+  ),
+  Question(
+    question: "3 What is the highest paid programming language in 2021?",
+    options: ["C++", "C", "Python", "Dart"],
+  ),
+  Question(
+    question: "4 What is the highest paid programming language in 2021?",
+    options: ["C++", "C", "Python", "Dart"],
+  ),
+  Question(
+    question: "5 What is the highest paid programming language in 2021?",
+    options: ["C++", "C", "Python", "Dart"],
+  )
+];
+
 List<QuestionModel> sampleQuestions = [
   QuestionModel(
       question: "What is the highest paid programming language in 2021?",

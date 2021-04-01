@@ -13,3 +13,17 @@ class QuestionModel {
       this.optionC,
       this.optionD});
 }
+
+class Question {
+  final String question;
+  final List<String> options;
+  final List<bool> selections;
+  Question({
+    String question,
+    List<String> options,
+    List<bool> selections,
+  })  : this.question = question,
+        this.options = options,
+        this.selections =
+            selections ?? List<bool>.generate(options.length, (index) => false);
+}

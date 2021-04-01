@@ -3,33 +3,71 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'reading_content.dart';
 import 'question.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+// reading questions state and cubit
+import 'reading_questions_cubit.dart';
+import 'reading_questions_state.dart';
+// import reading answers and cubit
+import 'reading_answers_cubit.dart';
+import 'reading_answers_state.dart';
 
 class ReadingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Column(
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) =>
+                  ReadingQuestionsCubit()..loadReadingQuestions()),
+          BlocProvider(
+              create: (context) => ReadingAnswersCubit(
+                  readingQuestionsCubit: context.read<ReadingQuestionsCubit>()))
+        ],
+        child: ReadingNavigator(),
+      ),
+    );
+  }
+}
+
+// Reading app navigator
+class ReadingNavigator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      pages: [MaterialPage(child: ReadingView())],
+      onPopPage: (route, result) => route.didPop(result),
+    );
+  }
+}
+
+class ReadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<ReadingQuestionsCubit, ReadingQuestionsState>(
+          builder: (context, state) {
+            if (state is ReadingQuestionsLoadedSuccess) {
+              return Stack(
                 children: [
-                  _readingProgressBar(context),
-                  _readingContent(),
-                  QuestionView(
-                    questions: sampleQuestions,
-                  )
+                  Column(
+                    children: [
+                      _readingProgressBar(context),
+                      _readingContent(),
+                      QuestionView(
+                        questions: state.questions,
+                      )
+                    ],
+                  ),
                 ],
-              ),
-              // Positioned(
-              //   bottom: 0,
-              //   right: 0,
-              //   child: QuestionView(
-              //     questions: sampleQuestions,
-              //   ),
-              // ),
-            ],
-          ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       ),
     );
@@ -82,7 +120,7 @@ class ReadingApp extends StatelessWidget {
 
 // QuestionView with collapsable
 class QuestionView extends StatefulWidget {
-  final List<QuestionModel> questions;
+  final List<Question> questions;
   const QuestionView({Key key, this.questions}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -102,7 +140,7 @@ class _QuestionViewState extends State<QuestionView> {
     );
   }
 
-  Widget _questionSlider(List<QuestionModel> questions, bool hidden) {
+  Widget _questionSlider(List<Question> questions, bool hidden) {
     return CarouselSlider(
       options: CarouselOptions(
           height: hidden ? 50 : MediaQuery.of(context).size.height / 3.0,
@@ -113,7 +151,8 @@ class _QuestionViewState extends State<QuestionView> {
           builder: (BuildContext context) {
             return Container(
               color: Colors.grey,
-              child: _questionCard(question, hidden),
+              child: _questionCard(
+                  question, hidden, questions.indexOf(question) + 1),
             );
           },
         );
@@ -121,140 +160,124 @@ class _QuestionViewState extends State<QuestionView> {
     );
   }
 
-  Widget _questionCard(QuestionModel question, bool hidden) {
+  Widget _questionCard(Question question, bool hidden, int questionIndex) {
     return Container(
       // color: Colors.cyan,
       // height: _hidden ? 50 : 300,
       // width: MediaQuery.of(context).size.width,
       child: Column(
         children: [
-          _questionSubmitBar(),
+          _questionSubmitBar(questionIndex),
           Expanded(
               child: Container(
             color: Colors.grey[200],
             child: widget.questions == null
                 ? null
-                : _questionView(widget.questions[0], hidden),
+                : _questionView(question, hidden),
           ))
         ],
       ),
     );
   }
 
-  Widget _questionView(QuestionModel question, bool hidden) {
-    return ListView(
-      children: [
-        Card(
-          elevation: 0,
-          color: Colors.grey,
-          child: ListTile(
-            title: Text(
-              question.question,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+  Widget _questionView(Question question, bool hidden) {
+    return BlocBuilder<ReadingAnswersCubit, ReadingAnswersState>(
+        builder: (context, state) {
+      return ListView(
+        children: [
+          Card(
+            elevation: 0,
+            color: Colors.grey[200],
+            child: ListTile(
+              title: Text(
+                question.question,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                print("tap question");
+              },
             ),
-            onTap: () {
-              print("tap question");
-            },
           ),
-        ),
-        Card(
-          child: ListTile(
-            title: Text(
-              question.optionA,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-            ),
-            onTap: () {
-              setState(() {
-                question.selected = 0;
-              });
-              print("tap option answer $question.selected ");
-            },
-          ),
-          color: question.selected == 0 ? Colors.yellow : Colors.white,
-        ),
-        Card(
-          child: ListTile(
-            title: Text(question.optionB),
-            onTap: () {
-              setState(() {
-                question.selected = 1;
-              });
-              print("tap option answer $question.selected ");
-            },
-          ),
-          color: question.selected == 1 ? Colors.yellow : Colors.white,
-        ),
-        Card(
-          child: ListTile(
-            title: Text(question.optionC),
-            onTap: () {
-              setState(() {
-                question.selected = 2;
-              });
-              print("tap option answer $question.selected ");
-            },
-          ),
-          color: question.selected == 2 ? Colors.yellow : Colors.white,
-        ),
-        Card(
-          child: ListTile(
-            title: Text(question.optionD),
-            onTap: () {
-              setState(() {
-                question.selected = 3;
-              });
-              print("tap option answer $question.selected ");
-            },
-          ),
-          color: question.selected == 3 ? Colors.yellow : Colors.white,
-        ),
-      ],
-    );
+          ...question.options.map((e) => Card(
+                child: ListTile(
+                  title: Text(
+                    'Option $e',
+                    style:
+                        TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
+                  ),
+                  onTap: () {
+                    // able to submite when answered all questions
+                    BlocProvider.of<ReadingAnswersCubit>(context)
+                        .addAnswer(question, e);
+                    setState(() {
+                      question.selections[question.options.indexOf(e)] =
+                          !question.selections[question.options.indexOf(e)];
+                    });
+                  },
+                ),
+                color: question.selections[question.options.indexOf(e)]
+                    ? Colors.yellow[800]
+                    : Colors.white,
+              )),
+        ],
+      );
+    });
   }
 
-  Widget _questionSubmitBar() {
-    return Container(
-      color: Colors.cyan,
-      child: Row(
-        children: [
-          Transform.rotate(
-            angle: 270 * math.pi / 180,
-            child: IconButton(
-                icon: Icon(
-                  Icons.chevron_left,
-                  color: Colors.blue,
-                  size: 35,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _hidden = !_hidden;
-                  });
-                }),
-          ),
-          Spacer(),
-          Text(
-            "Question 1/11",
-            style: TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.grey[100],
-                    padding: EdgeInsets.only(left: 5, right: 5)),
-                onPressed: () {},
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
-                )),
-          ),
-        ],
-      ),
-    );
+  Widget _questionSubmitBar(int questionIndex) {
+    return BlocBuilder<ReadingAnswersCubit, ReadingAnswersState>(
+        builder: (context, state) {
+      return Container(
+        color: Colors.cyan,
+        child: Row(
+          children: [
+            Transform.rotate(
+              angle: 270 * math.pi / 180,
+              child: IconButton(
+                  icon: Icon(
+                    Icons.chevron_left,
+                    color: Colors.white,
+                    size: 35,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _hidden = !_hidden;
+                    });
+                  }),
+            ),
+            Spacer(),
+            Text(
+              "Question $questionIndex/${widget.questions.length}",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: state.submitted ? 10 : 0,
+                      primary:
+                          state.submitted ? Colors.white : Colors.grey[300],
+                      padding: EdgeInsets.only(left: 5, right: 5)),
+                  onPressed: () {
+                    BlocProvider.of<ReadingAnswersCubit>(context).submit();
+                  },
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: state.submitted
+                            ? Colors.blueGrey[800]
+                            : Colors.grey[800]),
+                  )),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
