@@ -1,5 +1,5 @@
 const readingcontent =
-    """ The president’s “American Jobs Plan” would put corporate America on the hook for the tab as the government creates millions of jobs building infrastructure, such as roads, tackles climate change and boosts human services like care for the elderly.
+    """The president’s “American Jobs Plan” would put corporate America on the hook for the tab as the government creates millions of jobs building infrastructure, such as roads, tackles climate change and boosts human services like care for the elderly.
 
 “It’s a once-in-a-generation investment in America, unlike anything we’ve seen or done since we built the interstate highway system and the space race decades ago,” Biden said in unveiling the program in Pittsburgh.
 

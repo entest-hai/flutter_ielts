@@ -10,22 +10,47 @@ class ReadingApp extends StatelessWidget {
         body: SafeArea(
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Container(
-                      color: Colors.cyan,
-                      height: 50,
+              Column(
+                children: [
+                  Container(
+                    color: Colors.cyan.withOpacity(0.0),
+                    height: 50,
+                    child: Row(
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        Expanded(
+                          child: Container(
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              child: LinearProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Colors.cyan),
+                                value: 0.5,
+                                minHeight: 6,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(icon: Icon(Icons.person), onPressed: () {})
+                      ],
                     ),
-                    Expanded(
-                        child: SingleChildScrollView(
+                  ),
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 12),
+                    child: SingleChildScrollView(
                       child: Center(
                         child: Text(readingcontent),
                       ),
-                    ))
-                  ],
-                ),
+                    ),
+                  ))
+                ],
               ),
               Positioned(
                 bottom: 0,
