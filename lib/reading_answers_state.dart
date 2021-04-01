@@ -1,14 +1,14 @@
-import 'answer.dart';
+import 'question.dart';
 
 class ReadingAnswersState {
   final bool submitted;
   final int numQuestionsAnswered;
-  final List<ReadingAnswer> answers;
+  final List<Question> questions;
 
   ReadingAnswersState({
     this.submitted = false,
     numQuestionsAnswered,
-    answers,
+    questions,
   })  : this.numQuestionsAnswered = numQuestionsAnswered ?? 0,
-        this.answers = answers ?? [];
+        this.questions = questions ?? [];
 }

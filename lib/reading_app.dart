@@ -17,12 +17,11 @@ class ReadingApp extends StatelessWidget {
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => ReadingAnswersCubit()),
           BlocProvider(
-              create: (context) =>
-                  ReadingQuestionsCubit()..loadReadingQuestions()),
-          BlocProvider(
-              create: (context) => ReadingAnswersCubit(
-                  readingQuestionsCubit: context.read<ReadingQuestionsCubit>()))
+              create: (context) => ReadingQuestionsCubit(
+                  readingAnswersCubit: context.read<ReadingAnswersCubit>())
+                ..loadReadingQuestions()),
         ],
         child: ReadingNavigator(),
       ),
@@ -207,12 +206,9 @@ class _QuestionViewState extends State<QuestionView> {
                   ),
                   onTap: () {
                     // able to submite when answered all questions
-                    BlocProvider.of<ReadingAnswersCubit>(context)
-                        .addAnswer(question, e);
-                    setState(() {
-                      question.selections[question.options.indexOf(e)] =
-                          !question.selections[question.options.indexOf(e)];
-                    });
+                    BlocProvider.of<ReadingAnswersCubit>(context).updateAnswer(
+                        widget.questions.indexOf(question),
+                        question.options.indexOf(e));
                   },
                 ),
                 color: question.selections[question.options.indexOf(e)]
