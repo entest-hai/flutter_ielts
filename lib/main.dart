@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ielts/constants.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_ielts/reading_content.dart';
 import 'dart:math' as math;
 import 'Product.dart';
 import 'Vocabulary.dart';
 import 'reading_app.dart';
+import 'question.dart';
 
 void main() {
   runApp(ReadingApp());
@@ -229,36 +231,7 @@ class ReadingView extends StatefulWidget {
 // Reading View State with QuestionModel Data
 class _ReadingViewState extends State<ReadingView> {
   bool isHidden = false;
-  List<QuestionModel> questions = [
-    QuestionModel(
-        question: "What is the highest paid programming language in 2021?",
-        optionA: "C++",
-        optionB: "C++",
-        optionC: "Python",
-        optionD: "Flutter",
-        selected: -1),
-    QuestionModel(
-        question: "Where is the best place to work?",
-        optionA: "Singapore",
-        optionB: "United State",
-        optionC: "Israel",
-        optionD: "Germany",
-        selected: -1),
-    QuestionModel(
-        question: "Why AWS is so popular today?",
-        optionA: "Mature",
-        optionB: "Friendly",
-        optionC: "Professional",
-        optionD: "Cheap",
-        selected: -1),
-    QuestionModel(
-        question: "Where is saftest place on earth?",
-        optionA: "Japan",
-        optionB: "United State",
-        optionC: "Vietnam",
-        optionD: "North Korea",
-        selected: -1)
-  ];
+  List<QuestionModel> questions = sampleQuestions;
 
   @override
   Widget build(BuildContext context) {
@@ -463,18 +436,3 @@ class _ReadingViewState extends State<ReadingView> {
 }
 
 // QuestionModel
-class QuestionModel {
-  final String question;
-  final String optionA;
-  final String optionB;
-  final String optionC;
-  final String optionD;
-  int selected;
-  QuestionModel(
-      {this.selected,
-      this.question,
-      this.optionA,
-      this.optionB,
-      this.optionC,
-      this.optionD});
-}

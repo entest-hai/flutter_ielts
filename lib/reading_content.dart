@@ -1,3 +1,36 @@
+import 'question.dart';
+
+List<QuestionModel> sampleQuestions = [
+  QuestionModel(
+      question: "What is the highest paid programming language in 2021?",
+      optionA: "C++",
+      optionB: "C++",
+      optionC: "Python",
+      optionD: "Flutter",
+      selected: -1),
+  QuestionModel(
+      question: "Where is the best place to work?",
+      optionA: "Singapore",
+      optionB: "United State",
+      optionC: "Israel",
+      optionD: "Germany",
+      selected: -1),
+  QuestionModel(
+      question: "Why AWS is so popular today?",
+      optionA: "Mature",
+      optionB: "Friendly",
+      optionC: "Professional",
+      optionD: "Cheap",
+      selected: -1),
+  QuestionModel(
+      question: "Where is saftest place on earth?",
+      optionA: "Japan",
+      optionB: "United State",
+      optionC: "Vietnam",
+      optionD: "North Korea",
+      selected: -1)
+];
+
 const readingcontent =
     """The president’s “American Jobs Plan” would put corporate America on the hook for the tab as the government creates millions of jobs building infrastructure, such as roads, tackles climate change and boosts human services like care for the elderly.
 
