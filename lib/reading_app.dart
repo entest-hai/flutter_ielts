@@ -7,18 +7,24 @@ class ReadingApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Reading"),
-        ),
         body: SafeArea(
           child: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: SingleChildScrollView(
-                  child: Center(
-                    child: Text(readingcontent),
-                  ),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.cyan,
+                      height: 50,
+                    ),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Center(
+                        child: Text(readingcontent),
+                      ),
+                    ))
+                  ],
                 ),
               ),
               Positioned(
@@ -34,6 +40,19 @@ class ReadingApp extends StatelessWidget {
   }
 }
 
+//
+class ReadingProgressBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      color: Colors.cyan,
+    );
+  }
+}
+
+// QuestionView with collapsable
 class QuestionView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
