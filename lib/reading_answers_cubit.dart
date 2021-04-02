@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_ielts/question.dart';
+import 'package:flutter_ielts/reading_question.dart';
 import 'reading_answers_state.dart';
-import 'question.dart';
+import 'reading_question.dart';
 
 class ReadingAnswersCubit extends Cubit<ReadingAnswersState> {
   List<Question> questions = [];

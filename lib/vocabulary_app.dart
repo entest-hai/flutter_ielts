@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// wordcard event state and bloc
+import 'wordcard.dart';
+import 'wordcard_state.dart';
+import 'wordcard_bloc.dart';
+import 'wordcard_event.dart';
+// synonym state and cubit
+import 'synonym_cubit.dart';
+import 'synonym_state.dart';
 
 class VocabularyApp extends StatelessWidget {
   @override
@@ -26,7 +34,6 @@ class VocabularyApp extends StatelessWidget {
 class VocalbularyNavigator extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _VocalbularyNavigatorState();
   }
 }
@@ -168,111 +175,6 @@ class _VocabularyView extends State<VocabularyView> {
   }
 }
 
-// Word Card Data Modal
-class WordCard {
-  final String word;
-  final String description;
-  WordCard({this.word, this.description});
-}
-
-// Word Card Repository
-class WordCardRepository {
-  List<WordCard> cards;
-  WordCardRepository({this.cards});
-}
-
-// Wowrd Card Cubit and Bloc
-abstract class WordCardsEvent {}
-
-abstract class WordCardsState {}
-
-class LoadWordCardsEvent extends WordCardsEvent {}
-
-class LoadingWordCardsState extends WordCardsState {}
-
-class AddCardEvent extends WordCardsEvent {
-  final WordCard card;
-  AddCardEvent({this.card});
-}
-
-class AddCardState extends WordCardsState {
-  List<WordCard> cards;
-  AddCardState({this.cards});
-}
-
-class LoadedWordCardsState extends WordCardsState {
-  List<WordCard> cards;
-  LoadedWordCardsState({this.cards});
-}
-
-class FailedToLoadWordCardsState extends WordCardsState {
-  Error error;
-  FailedToLoadWordCardsState({this.error});
-}
-
-class WordCardsBloc extends Bloc<WordCardsEvent, WordCardsState> {
-  final _wordCardRepository = WordCardRepository(cards: []);
-  WordCardsBloc() : super(LoadingWordCardsState());
-
-  @override
-  Stream<WordCardsState> mapEventToState(WordCardsEvent event) async* {
-    final cards = _wordCardRepository.cards;
-
-    if (event is AddCardEvent) {
-      print("add event ${cards.length}");
-      cards.add(event.card);
-      yield LoadedWordCardsState(cards: cards);
-    }
-
-    if (event is LoadWordCardsEvent) {
-      yield LoadingWordCardsState();
-      try {
-        print("load event");
-        yield LoadedWordCardsState(cards: cards);
-      } catch (e) {
-        yield FailedToLoadWordCardsState(error: e);
-      }
-    }
-  }
-}
-
-// Synonym Data Modal
-class Synonym {
-  final String word;
-  final List<String> synonym;
-  Synonym({this.word, this.synonym});
-}
-
-// Synonym Repository
-class SynonymRepository {
-  Future<List<String>> fetchSynonym() async {
-    final List<String> synonym = [];
-    synonym.add("OK");
-    print("fetch synonym ");
-    return synonym;
-  }
-}
-
-// Synonym Cubit
-abstract class SynonymState {}
-
-class LoadingSynonym extends SynonymState {}
-
-class LoadedSynonymSuccess extends SynonymState {
-  final List<String> synonym;
-  LoadedSynonymSuccess({this.synonym});
-}
-
-class SynonymCubit extends Cubit<SynonymState> {
-  SynonymRepository _synonymRepository = SynonymRepository();
-  SynonymCubit() : super(LoadingSynonym());
-
-  void fetchSynonym(String word) async {
-    final synonym = await _synonymRepository.fetchSynonym();
-    emit(LoadedSynonymSuccess(synonym: synonym));
-  }
-}
-
 // Synonym Detail View
 class DetailView extends StatelessWidget {
   final String selectedWord;
@@ -281,7 +183,6 @@ class DetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

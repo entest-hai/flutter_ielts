@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:math' as math;
 import 'reading_content.dart';
-import 'question.dart';
+import 'reading_question.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // reading questions state and cubit
 import 'reading_questions_cubit.dart';
@@ -133,7 +133,7 @@ class _QuestionViewState extends State<QuestionView> {
   Widget build(BuildContext context) {
     return Container(
       // color: Colors.cyan,
-      height: _hidden ? 50 : MediaQuery.of(context).size.height / 2.5,
+      height: _hidden ? 50 : MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width,
       child: _questionSlider(widget.questions, _hidden),
     );
@@ -142,7 +142,7 @@ class _QuestionViewState extends State<QuestionView> {
   Widget _questionSlider(List<Question> questions, bool hidden) {
     return CarouselSlider(
       options: CarouselOptions(
-          height: hidden ? 50 : MediaQuery.of(context).size.height / 2.5,
+          height: hidden ? 50 : MediaQuery.of(context).size.height * 0.4,
           viewportFraction: 1.0,
           enlargeCenterPage: true),
       items: questions.map((question) {
