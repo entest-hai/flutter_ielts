@@ -197,33 +197,32 @@ class _QuestionViewState extends State<QuestionView> {
               },
             ),
           ),
-          ...question.options.map((e) => Card(
-                child: ListTile(
-                  dense: true,
-                  title: Text(
-                    'Option $e',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
-                  ),
-                  onTap: () {
-                    // able to submite when answered all questions
-                    BlocProvider.of<ReadingAnswersCubit>(context).updateAnswer(
-                        widget.questions.indexOf(question),
-                        question.options.indexOf(e));
-                  },
+          for (int index = 0; index < question.options.length; index++)
+            Card(
+              child: ListTile(
+                dense: true,
+                title: Text(
+                  'Option ${question.options[index]}',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
                 ),
-                color: question.selections[question.options.indexOf(e)]
-                    ? Colors.yellow[800]
-                    : Colors.white,
-                shape: (question.options.indexOf(e) != null) &&
-                        (question.options.indexOf(e) ==
-                            state.correctOptions[
-                                state.questions.indexOf(question)])
-                    ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        side: BorderSide(color: Colors.cyan, width: 3.0))
-                    : null,
-              )),
+                onTap: () {
+                  // able to submite when answered all questions
+                  BlocProvider.of<ReadingAnswersCubit>(context)
+                      .updateAnswer(state.questions.indexOf(question), index);
+                },
+              ),
+              color: question.selections[index]
+                  ? Colors.yellow[800]
+                  : Colors.white,
+              shape: (index != null) &&
+                      (index ==
+                          state.correctOptions[
+                              state.questions.indexOf(question)])
+                  ? RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      side: BorderSide(color: Colors.cyan, width: 3.0))
+                  : null,
+            )
         ],
       );
     });
