@@ -3,7 +3,7 @@ import 'question.dart';
 List<Question> mockQuestions = [
   Question(
     question: "1 What is the highest paid programming language in 2021?",
-    options: ["C++", "C", "Python", "Dart"],
+    options: ["C++ ", "C", "Python", "Dart"],
   ),
   Question(
     question: "2 What is the highest paid programming language in 2021?",

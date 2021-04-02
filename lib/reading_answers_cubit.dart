@@ -14,21 +14,41 @@ class ReadingAnswersCubit extends Cubit<ReadingAnswersState> {
         submitted: false,
         questions: questions,
         numQuestionsAnswered: 0,
-        correctOptions: List.generate(questions.length, (index) => -1)));
+        correctOptions: List.generate(questions.length + 1, (index) => -1)));
   }
 
   // Update an answer
   void updateAnswer(int questionIdx, int optionIdx) {
     questions = this.state.questions;
+
+    // update selections
     questions[questionIdx].selections[optionIdx] =
         !questions[questionIdx].selections[optionIdx];
+
+    // question answered
+    questions[questionIdx].answered = false;
+    for (var selection in questions[questionIdx].selections) {
+      if (selection) {
+        questions[questionIdx].answered = true;
+        break;
+      }
+    }
+
+    // number of question answered
+    var numAnsweredQuestion = 0;
+    for (var question in questions) {
+      if (question.answered) {
+        numAnsweredQuestion += 1;
+      }
+    }
+
+    print("num answered question $numAnsweredQuestion");
+
     emit(ReadingAnswersState(
         questions: questions,
-        numQuestionsAnswered: this.state.numQuestionsAnswered + 1,
+        numQuestionsAnswered: numAnsweredQuestion,
         submitted:
-            this.state.numQuestionsAnswered + 1 >= this.state.questions.length
-                ? true
-                : false,
+            numAnsweredQuestion >= this.state.questions.length ? true : false,
         correctOptions: this.state.correctOptions));
   }
 
@@ -37,10 +57,20 @@ class ReadingAnswersCubit extends Cubit<ReadingAnswersState> {
     if (this.state.numQuestionsAnswered >= this.state.questions.length) {
       // submit answers to cloud
       print("submitted answers to cloud");
+
+      emit(ReadingAnswersState(
+          questions: this.state.questions,
+          submitted: false,
+          correctOptions: this.state.correctOptions));
+
+      // wait for results
       await Future.delayed(Duration(seconds: 2));
       final corrects =
-          List.generate(this.state.questions.length, (index) => index);
-      emit(ReadingAnswersState(correctOptions: corrects));
+          List.generate(this.state.questions.length + 1, (index) => index);
+      emit(ReadingAnswersState(
+          questions: this.state.questions,
+          submitted: false,
+          correctOptions: corrects));
     }
   }
 }

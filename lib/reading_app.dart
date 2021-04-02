@@ -133,7 +133,7 @@ class _QuestionViewState extends State<QuestionView> {
   Widget build(BuildContext context) {
     return Container(
       // color: Colors.cyan,
-      height: _hidden ? 50 : 300,
+      height: _hidden ? 50 : MediaQuery.of(context).size.height / 2.5,
       width: MediaQuery.of(context).size.width,
       child: _questionSlider(widget.questions, _hidden),
     );
@@ -142,7 +142,7 @@ class _QuestionViewState extends State<QuestionView> {
   Widget _questionSlider(List<Question> questions, bool hidden) {
     return CarouselSlider(
       options: CarouselOptions(
-          height: hidden ? 50 : MediaQuery.of(context).size.height / 3.0,
+          height: hidden ? 50 : MediaQuery.of(context).size.height / 2.5,
           viewportFraction: 1.0,
           enlargeCenterPage: true),
       items: questions.map((question) {
@@ -199,6 +199,7 @@ class _QuestionViewState extends State<QuestionView> {
           ),
           ...question.options.map((e) => Card(
                 child: ListTile(
+                  dense: true,
                   title: Text(
                     'Option $e',
                     style:
@@ -215,9 +216,12 @@ class _QuestionViewState extends State<QuestionView> {
                     ? Colors.yellow[800]
                     : Colors.white,
                 shape: (question.options.indexOf(e) != null) &&
-                        (question.options.indexOf(e) == state.correctOptions[0])
+                        (question.options.indexOf(e) ==
+                            state.correctOptions[
+                                state.questions.indexOf(question)])
                     ? RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.blue))
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(color: Colors.cyan, width: 3.0))
                     : null,
               )),
         ],
